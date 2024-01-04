@@ -28,12 +28,20 @@ const removePrefixChars = fileName => {
     return fileName;
 }
 
+const baseLength = fileName => {
+    const loc = fileName.lastIndexOf('.');
+    if (loc === -1) return 0;
+    
+
+    return loc;
+}
+
 let count = 0;
 for (const filePath of walkSync(directory_2)) {
     let fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
   console.log(fileName);
   fileName = removePrefixChars(fileName);
-  console.log(fileName);
+  console.log(fileName, baseLength(fileName));
   ++count;
   if (count > 5) break;
 }
