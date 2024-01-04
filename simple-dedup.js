@@ -1,7 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const directory_1 = '/Users/michaelwood/Desktop/github/playground/simple-dedup';
+const prefixChars = ['0', '-'];
+const directory_1 = '/Volumes/LocalBackup/er/imf';
+const directory_2 = '/Volumes/LocalBackup/er/imfrev';
 
 function *walkSync(dir) {
   const files = fs.readdirSync(dir, { withFileTypes: true });
@@ -14,8 +16,25 @@ function *walkSync(dir) {
   }
 }
 
-for (const filePath of walkSync(directory_1)) {
-    const fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
+const removePrefixChars = fileName => {
+    if (!fileName) return '';
+
+    testChar = fileName[0];
+    while (prefixChars.find(pc => pc === testChar)) {
+        fileName = fileName.substring(1);
+        testChar = fileName[0];
+    }
+
+    return fileName;
+}
+
+let count = 0;
+for (const filePath of walkSync(directory_2)) {
+    let fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
   console.log(fileName);
+  fileName = removePrefixChars(fileName);
+  console.log(fileName);
+  ++count;
+  if (count > 5) break;
 }
 
