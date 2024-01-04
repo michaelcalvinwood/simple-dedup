@@ -1,0 +1,11 @@
+{
+  "name": "simple-dedup",
+  "version": "1.0.0",
+  "description": "",
+  "main": "simple-dedup.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Michael Wood",
+  "license": "MIT"
+}
