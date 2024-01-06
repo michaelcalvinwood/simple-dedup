@@ -1,9 +1,17 @@
+
+//if (process.argv.length < 3) return console.log('Please provide reduceDir');
+const reduceDir = process.argv[2] ? process.argv[2] : '/Volumes/LocalBackup/er/subfolders/';
+
 const fs = require('fs');
 const path = require('path');
 
 const prefixChars = ['0', '-'];
-const directory_1 = '/Volumes/LocalBackup/er/imf';
-const directory_2 = '/Volumes/LocalBackup/er/imfrev';
+const directory_1 = '/Volumes/LocalBackup/er/imf/';
+const directory_2 = '/Volumes/LocalBackup/er/imf-rev/';
+
+const skipDir = '/Volumes/LocalBackup/er/imf-skip/';
+
+
 
 function *walkSync(dir) {
   const files = fs.readdirSync(dir, { withFileTypes: true });
@@ -38,15 +46,38 @@ const baseLength = fileName => {
 let count = 0;
 const processedFiles = new Set();
 
+for (const filePath of walkSync(directory_1)) {
+    let fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
+    fileName = removePrefixChars(fileName);
+    const length = baseLength(fileName);
+
+    if (length > 3) processedFiles.add(fileName);
+}
+
 for (const filePath of walkSync(directory_2)) {
     let fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
     fileName = removePrefixChars(fileName);
     const length = baseLength(fileName);
 
     if (length > 3) processedFiles.add(fileName);
-
-    ++count;
-    if (count > 5) break;
 }
 
-console.log(processedFiles);
+// Move matches
+
+let matchCount = 0;
+
+for (const filePath of walkSync(reduceDir)) {
+    let fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
+    fileName = removePrefixChars(fileName);
+   
+    if (processedFiles.has(fileName)) {
+        console.log('Match:', fileName);
+        ++matchCount;
+        fs.renameSync(filePath, skipDir + fileName);
+       
+    }
+}
+
+
+console.log(processedFiles.size);
+console.log('Matches', matchCount)
